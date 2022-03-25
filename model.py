@@ -1,28 +1,7 @@
-from flask import Flask
-from flask_migrate import Migrate
-from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy
-
-
-db = SQLAlchemy(app)
-
-migrate = Migrate(app, db)
-moment = Moment(app)
-
-# class Genres(db.Model):
-#     __tablename__ = 'Genres'
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String)
-#     # venues = relationship('Venues', secondary=VenueGenres, backref='Genres')
-
-# class VenueGenres(db.Model):
-#     __tablename__ = 'VenueGenres'
-#     id = db.Column(db.Integer, primary_key=True, index=True)
-#     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-#     genre_id = db.Column(db.Integer, db.ForeignKey('Genres.id'), nullable=False)
+from app import db
 
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venue'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     city = db.Column(db.String(120), nullable=False)
@@ -35,17 +14,14 @@ class Venue(db.Model):
     website_link = db.Column(db.String(120))
     seeking_description = db.Column(db.String(120))
     genres = db.Column(db.String(120))
-    # genres = db.relationship('Genres', secondary=VenueGenres, backref='Venue')
-    shows = db.relationship('Show', backref='Venue', lazy=True)
+    shows = db.relationship('show', backref='venue', lazy=True)
 
-# class ArtistGenres(db.Model):
-#     __tablename__ = 'ArtistGenres'
-#     id = db.Column(db.Integer, primary_key=True, index=True)
-#     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
-#     genre_id = db.Column(db.Integer, db.ForeignKey('Genres.id'), nullable=False)
+    def __repr__(self):
+        return f'<id: {self.id}, name: {self.name}>'
+
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artist'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     city = db.Column(db.String(120), nullable=False)
@@ -57,11 +33,10 @@ class Artist(db.Model):
     website_link = db.Column(db.String(120))
     looking = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
-    # genres = db.relationship('Genres', secondary=ArtistGenres, backref='Artist')
-    shows = db.relationship('Show', backref='Artist', lazy=True)
+    shows = db.relationship('show', backref='artist', lazy=True)
 
 class Show(db.Model):
-    __tablename__ = 'Show'
+    __tablename__ = 'show'
     id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    atist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
+    venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=False)
+    atist_id = db.Column(db.Integer, db.ForeignKey('artist.id'), nullable=False)
