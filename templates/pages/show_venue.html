@@ -1,6 +1,26 @@
 {% extends 'layouts/main.html' %}
 {% block title %}Venue Search{% endblock %}
 {% block content %}
+
+<script type="text/javascript">
+function deleteVenue(e) {
+	const venue_id = document.getElementById('deleteBtn').dataset.venue;
+	
+	fetch('/venues/'+ venue_id + '/delete',{method: 'DELETE'})
+	.then(function(resp) {
+        if(resp.ok==true)
+    	     $("body").load("/");
+     	else
+			$("#venuemsg").removeClass('hidden')
+
+    })
+    .catch(function(e) {
+     	console.error(e);
+		$("venuemsg").removeClass('hidden')
+    });
+};
+</script>
+
 <div class="row">
 	<div class="col-sm-6">
 		<h1 class="monospace">
@@ -74,8 +94,11 @@
 		{% endfor %}
 	</div>
 </section>
+<div id="venuemsg" class="alert alert-block alert-info fade in hidden">
+	An error ocurred. Venue {{ venue.name }} could not be deleted.
+</div>
 
 <a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+<button id="deleteBtn" data-venue="{{venue.id}}" class="btn btn-secondary btn-lg" onclick="deleteVenue()">Delete</button></a>
 
 {% endblock %}
-
